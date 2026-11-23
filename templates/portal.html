@@ -9,27 +9,47 @@
         <div class="portal-header">
             <div class="portal-badge">📶 شبكة خاصة ومحمية</div>
             <h1 style="font-size: 26px; color: #1e3a8a; margin-top: 10px;">شبكة الباشمهندس نبيل</h1>
-            <p style="color: #64748b; margin-top: 6px;">أهلاً بك، اضغط على الزر بالأسفل لتأكيد الاتصال بالشبكة</p>
+            <p style="color: #64748b; margin-top: 6px;">أهلاً بك، اضغط على الزر لتأكيد اتصال هاتفك بالشبكة</p>
         </div>
 
         <!-- Connection & Notification Section -->
-        <div class="portal-section notif-box" style="margin: 30px 0; padding: 25px 20px;">
+        <div class="portal-section notif-box" style="margin: 25px 0; padding: 25px 20px;">
             <div id="subStatusArea">
+                <!-- Normal Button State -->
                 <div id="subPending">
                     <button id="subscribeBtn" onclick="subscribeUser()" class="btn btn-primary btn-large glow-btn" style="font-size: 18px; padding: 18px 25px; border-radius: 14px;">
                         ⚡ وصل النت مع الباشمهندس نبيل
                     </button>
                     <p class="micro-hint" style="margin-top: 12px; font-size: 13px; color: #64748b;">
-                        اضغط على الزر لتأكيد اتصال هاتفك بالخدمة
+                        اضغط على الزر ثم اختر <strong>"سماح / Allow"</strong> لتأكيد الاتصال
                     </p>
                 </div>
 
+                <!-- iOS Safari Special Instructions -->
+                <div id="iosGuide" style="display: none; background: #fff; border: 1.5px dashed #2563eb; border-radius: 14px; padding: 20px; text-align: right; margin-top: 10px;">
+                    <h4 style="color: #1e3a8a; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span>📱</span> لمستخدمي الآيفون (خطوة واحدة):
+                    </h4>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 12px;">
+                        نظام أبل (iOS) يشترط إضافة الموقع للشاشة الرئيسية لتفعيل الإشعارات:
+                    </p>
+                    <ol style="font-size: 13px; color: #1e293b; padding-right: 20px; line-height: 1.8;">
+                        <li>اضغط على زر المشاركة (مربع بسهم <strong>⬆️ Share</strong>) في أسفل شاشة Safari.</li>
+                        <li>اختر <strong>"إضافة إلى الشاشة الرئيسية" (Add to Home Screen)</strong>.</li>
+                        <li>افتح الأيقونة من شاشتك واضغط <strong>"وصل النت"</strong> لتصلك الإشعارات فوراً!</li>
+                    </ol>
+                    <button onclick="confirmAnyway()" class="btn btn-outline full-width mt-10" style="font-size: 13px;">
+                        تأكيد الاتصال بالنت الآن
+                    </button>
+                </div>
+
+                <!-- Success State -->
                 <div id="subSuccess" style="display: none;">
                     <div class="success-badge" style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 18px; border-radius: 12px;">
                         <span class="check-icon" style="font-size: 32px;">✅</span>
                         <div style="text-align: right; margin-right: 12px;">
                             <h4 style="color: #065f46; font-size: 17px; margin-bottom: 4px;">تم توصيل النت مع الباشمهندس نبيل!</h4>
-                            <p style="color: #047857; font-size: 13px;">هاتفك متصل الآن ومسجل في الشبكة بنجاح.</p>
+                            <p style="color: #047857; font-size: 13px;">هاتفك متصل ومسجل الآن بنجاح.</p>
                         </div>
                     </div>
                 </div>
@@ -58,8 +78,16 @@ function urlB64ToUint8Array(base64String) {
     return outputArray;
 }
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
 window.addEventListener('load', async () => {
-    // Safe check without crashing on iOS Safari
+    // If user already connected previously, remember it
+    if (localStorage.getItem('nabil_wifi_connected') === 'true') {
+        document.getElementById('subPending').style.display = 'none';
+        document.getElementById('subSuccess').style.display = 'block';
+    }
+
     const hasSW = ('serviceWorker' in navigator);
     const hasPush = ('PushManager' in window);
     const hasNotif = (typeof window.Notification !== 'undefined');
@@ -77,7 +105,9 @@ window.addEventListener('load', async () => {
         const sub = await reg.pushManager.getSubscription();
         if (sub) {
             document.getElementById('subPending').style.display = 'none';
+            document.getElementById('iosGuide').style.display = 'none';
             document.getElementById('subSuccess').style.display = 'block';
+            localStorage.setItem('nabil_wifi_connected', 'true');
         }
     } catch (e) {
         console.warn('Init:', e);
@@ -92,71 +122,68 @@ async function subscribeUser() {
     const hasNotif = (typeof window.Notification !== 'undefined');
     const hasSW = ('serviceWorker' in navigator);
     const hasPush = ('PushManager' in window);
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-    // Graceful handling for iOS or browsers without direct Notification API
-    if (!hasNotif || !hasSW || !hasPush) {
+    // If on iPhone Safari (not added to home screen yet)
+    if (isIOS && !isStandalone && !hasNotif) {
         document.getElementById('subPending').style.display = 'none';
-        document.getElementById('subSuccess').style.display = 'block';
-        
-        let msg = 'تم تأكيد اتصالك بالشبكة بنجاح.';
-        if (isIOS) {
-            msg = 'تم الاتصال بالشبكة بنجاح مع الباشمهندس نبيل 📶';
-        }
-
-        Swal.fire({
-            icon: 'success',
-            title: 'وصل النت مع الباشمهندس نبيل! 🚀',
-            text: msg,
-            confirmButtonColor: '#2563eb',
-            confirmButtonText: 'تمام'
-        });
+        document.getElementById('iosGuide').style.display = 'block';
         return;
     }
 
-    try {
-        const permission = await window.Notification.requestPermission();
-        
-        if (permission === 'granted') {
-            const reg = await navigator.serviceWorker.ready;
-            const sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlB64ToUint8Array(vapidPublicKey)
-            });
+    // Standard Android / Desktop / iOS PWA Flow
+    if (hasNotif && hasSW && hasPush) {
+        try {
+            const permission = await window.Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                const reg = await navigator.serviceWorker.ready;
+                const sub = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlB64ToUint8Array(vapidPublicKey)
+                });
 
-            await fetch('/api/subscribe', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    subscription: sub,
-                    userAgent: navigator.userAgent
-                })
-            });
+                const resp = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        subscription: sub,
+                        userAgent: navigator.userAgent
+                    })
+                });
+                const resData = await resp.json();
+                console.log('Subscribed:', resData);
+            }
+        } catch (err) {
+            console.error('Push error:', err);
         }
-
-        // Always show the successful connection message
-        document.getElementById('subPending').style.display = 'none';
-        document.getElementById('subSuccess').style.display = 'block';
-        Swal.fire({
-            icon: 'success',
-            title: 'وصل النت مع الباشمهندس نبيل! 🚀',
-            text: 'تم تأكيد اتصالك بالشبكة بنجاح.',
-            confirmButtonColor: '#2563eb',
-            confirmButtonText: 'تمام'
-        });
-    } catch (err) {
-        console.warn(err);
-        // Fallback gracefully so the guest always gets the success confirmation
-        document.getElementById('subPending').style.display = 'none';
-        document.getElementById('subSuccess').style.display = 'block';
-        Swal.fire({
-            icon: 'success',
-            title: 'وصل النت مع الباشمهندس نبيل! 🚀',
-            text: 'تم الاتصال بالشبكة بنجاح.',
-            confirmButtonColor: '#2563eb',
-            confirmButtonText: 'تمام'
-        });
     }
+
+    // Save connection state locally so button doesn't reset on refresh
+    localStorage.setItem('nabil_wifi_connected', 'true');
+    document.getElementById('subPending').style.display = 'none';
+    document.getElementById('iosGuide').style.display = 'none';
+    document.getElementById('subSuccess').style.display = 'block';
+
+    Swal.fire({
+        icon: 'success',
+        title: 'وصل النت مع الباشمهندس نبيل! 🚀',
+        text: 'تم تأكيد اتصالك بالشبكة بنجاح.',
+        confirmButtonColor: '#2563eb',
+        confirmButtonText: 'تمام'
+    });
+}
+
+function confirmAnyway() {
+    localStorage.setItem('nabil_wifi_connected', 'true');
+    document.getElementById('iosGuide').style.display = 'none';
+    document.getElementById('subSuccess').style.display = 'block';
+    Swal.fire({
+        icon: 'success',
+        title: 'وصل النت مع الباشمهندس نبيل! 🚀',
+        text: 'تم تأكيد اتصالك بالشبكة بنجاح.',
+        confirmButtonColor: '#2563eb',
+        confirmButtonText: 'تمام'
+    });
 }
 </script>
 {% endblock %}
