@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كارت الواي فاي وتفعيل الإشعارات</title>
+    <title>كارت شبكة المهندس نبيل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
@@ -16,16 +16,16 @@
         .printable-card {
             background: #ffffff;
             width: 100%;
-            max-width: 720px;
+            max-width: 680px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border: 2px dashed #cbd5e1;
-            padding: 35px 30px;
+            padding: 40px 30px;
             text-align: center;
         }
 
-        .card-header h1 { font-size: 26px; color: #1e293b; margin-bottom: 6px; }
-        .card-header p { color: #64748b; font-size: 15px; margin-bottom: 25px; }
+        .card-header h1 { font-size: 28px; color: #1e3a8a; margin-bottom: 6px; }
+        .card-header p { color: #64748b; font-size: 15px; margin-bottom: 30px; }
 
         .qr-columns {
             display: grid;
@@ -38,7 +38,7 @@
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 20px 15px;
+            padding: 22px 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,43 +54,29 @@
             font-weight: 700;
             margin-bottom: 12px;
             color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .qr-box img {
-            width: 175px;
-            height: 175px;
+            width: 180px;
+            height: 180px;
             border-radius: 12px;
             background: #fff;
             padding: 8px;
             border: 1px solid #cbd5e1;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .qr-desc {
             font-size: 13px;
             color: #475569;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-
-        .network-details {
-            background: #f1f5f9;
-            padding: 14px 20px;
-            border-radius: 12px;
-            display: inline-flex;
-            gap: 25px;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        .net-item strong { color: #2563eb; }
 
         .card-footer {
-            font-size: 12px;
+            font-size: 13px;
             color: #94a3b8;
             border-top: 1px solid #f1f5f9;
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
         @media print {
@@ -109,35 +95,28 @@
 
     <div class="printable-card">
         <div class="card-header">
-            <h1>📶 شبكة الإنترنت وتنبيهات الواي فاي</h1>
-            <p>امسح الكود بكاميرا هاتفك للاتصال بالشبكة وتفعيل الإشعارات الفورية</p>
-        </div>
-
-        <div class="network-details">
-            <span class="net-item">اسم الشبكة: <strong>{{ config.wifi_ssid }}</strong></span>
-            {% if config.wifi_password %}
-            <span class="net-item">كلمة المرور: <strong>{{ config.wifi_password }}</strong></span>
-            {% endif %}
+            <h1>📶 شبكة المهندس نبيل</h1>
+            <p>امسح الكود بكاميرا هاتفك للاتصال السريع بالشبكة وتفعيل التنبيهات</p>
         </div>
 
         <div class="qr-columns">
-            <!-- WiFi Connect Box -->
+            <!-- WiFi Auto-Connect Box (Secret / No Password Shown) -->
             <div class="qr-box">
                 <div class="qr-title">📡 1. الاتصال بالواي فاي</div>
-                <img src="/qr/wifi.png" alt="كود الواي فاي">
-                <p class="qr-desc">امسح الكود بكاميرا الهاتف للاتصال بشبكة الواي فاي تلقائياً بدون كتابة باسورد.</p>
+                <img src="/qr/wifi.png" alt="كود الاتصال">
+                <p class="qr-desc">امسح الكود بكاميرا الهاتف للاتصال بالشبكة تلقائياً وبأمان تام دون الحاجة لكتابة أو معرفة كلمة السر.</p>
             </div>
 
-            <!-- Alerts Subscribe Box -->
+            <!-- Confirmation & Alerts Box -->
             <div class="qr-box highlight">
-                <div class="qr-title">🔔 2. تفعيل التنبيهات المباشرة</div>
-                <img src="/qr/portal.png" alt="كود التنبيهات">
-                <p class="qr-desc">امسح الكود واضغط <strong>تفعيل الإشعارات</strong> لتصلك تنبيهات انقطاع النت ومواعيد الصيانة فوراً.</p>
+                <div class="qr-title">⚡ 2. تأكيد وتفعيل النت</div>
+                <img src="/qr/portal.png" alt="كود التأكيد">
+                <p class="qr-desc">امسح الكود واضغط على زر: <strong>وصل النت مع المهندس نبيل</strong> لتأكيد الاتصال وتفعيل التنبيهات.</p>
             </div>
         </div>
 
         <div class="card-footer">
-            🔒 نظام إشعارات خاص ومحمي 100% • بدون أي تطبيقات خارجية
+            🔒 شبكة خاصة ومحمية • إشراف م/ نبيل محمود
         </div>
     </div>
 

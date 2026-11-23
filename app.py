@@ -36,9 +36,9 @@ VAPID_PUBLIC_KEY = get_vapid_keys()
 
 # 2. Config & Subscriptions Storage
 DEFAULT_CONFIG = {
-    "wifi_ssid": "WE-WiFi",
+    "wifi_ssid": "Prof.NabilM",
     "wifi_password": "",
-    "public_url": "http://127.0.0.1:5001",
+    "public_url": "https://nabilelshaer7.pythonanywhere.com",
     "history": []
 }
 

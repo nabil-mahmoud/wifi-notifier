@@ -1,82 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}بوابة شبكة الواي فاي والتنبيهات{% endblock %}
+{% block title %}شبكة المهندس نبيل 📶{% endblock %}
 
 {% block content %}
 <div class="portal-wrapper">
-    <div class="portal-card">
+    <div class="portal-card text-center">
+        <!-- Header -->
         <div class="portal-header">
             <div class="portal-badge">📶 شبكة خاصة ومحمية</div>
-            <h1>{{ config.wifi_ssid }}</h1>
-            <p>أهلاً بك في شبكتنا. فعّل الإشعارات لتصلك تنبيهات سرعة النت، الصيانة، وتجديد الباقة.</p>
+            <h1 style="font-size: 26px; color: #1e3a8a; margin-top: 10px;">شبكة المهندس نبيل</h1>
+            <p style="color: #64748b; margin-top: 6px;">أهلاً بك، اضغط على الزر بالأسفل للاتصال بالشبكة وتفعيل التنبيهات</p>
         </div>
 
-        <!-- Notification Subscription Section -->
-        <div class="portal-section notif-box">
-            <div class="section-title">
-                <span class="sec-icon">🔔</span>
-                <div>
-                    <h3>تنبيهات شاشة القفل</h3>
-                    <p class="sec-sub">استقبل رسائل هامة عن حالة النت مباشرة على هاتفك</p>
-                </div>
-            </div>
-
-            <div id="subStatusArea" class="status-container">
-                <div id="subPending" class="status-state">
-                    <button id="subscribeBtn" onclick="subscribeUser()" class="btn btn-primary btn-large glow-btn">
-                        🔔 تفعيل الإشعارات بنقرة واحدة
+        <!-- Connection & Notification Section -->
+        <div class="portal-section notif-box" style="margin: 30px 0; padding: 25px 20px;">
+            <div id="subStatusArea">
+                <div id="subPending">
+                    <button id="subscribeBtn" onclick="subscribeUser()" class="btn btn-primary btn-large glow-btn" style="font-size: 18px; padding: 18px 25px; border-radius: 14px;">
+                        ⚡ وصل النت مع المهندس نبيل
                     </button>
-                    <p class="micro-hint">سيطلب منك المتصفح السماح بالإشعارات، اضغط "سماح / Allow".</p>
+                    <p class="micro-hint" style="margin-top: 12px; font-size: 13px; color: #64748b;">
+                        اضغط على الزر وافق على الطلب للاتصال بالخدمة
+                    </p>
                 </div>
 
-                <div id="subSuccess" class="status-state" style="display: none;">
-                    <div class="success-badge">
-                        <span class="check-icon">✅</span>
-                        <div>
-                            <h4>تم تفعيل الإشعارات بنجاح!</h4>
-                            <p>هاتفك مسجل الآن وستصلك أي تنبيهات تخص شبكة الواي فاي.</p>
+                <div id="subSuccess" style="display: none;">
+                    <div class="success-badge" style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 18px; border-radius: 12px;">
+                        <span class="check-icon" style="font-size: 32px;">✅</span>
+                        <div style="text-align: right; margin-right: 12px;">
+                            <h4 style="color: #065f46; font-size: 17px; margin-bottom: 4px;">تم توصيل النت مع المهندس نبيل!</h4>
+                            <p style="color: #047857; font-size: 13px;">هاتفك متصل الآن ومسجل لاستقبال تنبيهات الشبكة.</p>
                         </div>
                     </div>
-                    <button onclick="testMyDevice()" class="btn btn-outline full-width mt-10">
-                        📩 إرسال إشعار تجريبي لهاتفي الآن
-                    </button>
                 </div>
 
-                <div id="subDenied" class="status-state" style="display: none;">
-                    <div class="warning-badge">
-                        <span>⚠️ تم رفض الإشعارات في المتصفح</span>
-                        <p>لتفعيلها، اضغط على علامة القفل 🔒 بجوار عنوان الموقع في شريط المتصفح واختر "السماح بالإشعارات".</p>
+                <div id="subDenied" style="display: none;">
+                    <div class="warning-badge" style="background: #fffbeb; border: 1px solid #fde68a; padding: 16px; border-radius: 12px; color: #92400e; font-size: 13px;">
+                        <span>⚠️ تم رفض الإذن من المتصفح</span>
+                        <p style="margin-top: 6px;">لتأكيد الاتصال، اضغط على علامة القفل 🔒 بجوار عنوان الموقع واختر "السماح بالإشعارات".</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Wi-Fi Connection Section -->
-        <div class="portal-section wifi-box">
-            <div class="section-title">
-                <span class="sec-icon">📡</span>
-                <div>
-                    <h3>بيانات الاتصال بالواي فاي</h3>
-                    <p class="sec-sub">اسم الشبكة وكلمة المرور للمتصلين</p>
-                </div>
-            </div>
-
-            <div class="wifi-info-row">
-                <span class="info-label">اسم الشبكة:</span>
-                <span class="info-val">{{ config.wifi_ssid }}</span>
-            </div>
-
-            {% if config.wifi_password %}
-            <div class="wifi-info-row">
-                <span class="info-label">كلمة السر:</span>
-                <span class="info-val font-mono" id="pwdText">{{ config.wifi_password }}</span>
-                <button onclick="copyPassword()" class="btn btn-sm btn-outline" id="copyBtn">📋 نسخ</button>
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="portal-footer">
-            🔒 نظام إشعارات خاص ومحمي 100% • بدون أي تطبيقات خارجية
+        <div class="portal-footer" style="color: #94a3b8; font-size: 12px; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+            🔒 شبكة آمنة وخاصة • إشراف م/ نبيل محمود
         </div>
     </div>
 </div>
@@ -86,50 +54,27 @@
 <script>
 let vapidPublicKey = '';
 
-// Helper to convert base64 to Uint8Array for VAPID
 function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
     const rawData = window.atob(base64);
     const outputArray = new Uint8Array(rawData.length);
-
     for (let i = 0; i < rawData.length; ++i) {
         outputArray[i] = rawData.charCodeAt(i);
     }
     return outputArray;
 }
 
-// Copy Password Helper
-function copyPassword() {
-    const pwd = document.getElementById('pwdText').innerText;
-    navigator.clipboard.writeText(pwd).then(() => {
-        const btn = document.getElementById('copyBtn');
-        btn.innerText = '✅ تم النسخ!';
-        setTimeout(() => btn.innerText = '📋 نسخ', 2000);
-    });
-}
-
-// Check initial status on page load
 window.addEventListener('load', async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.warn('Push messaging is not supported in this browser.');
         return;
     }
-
     try {
-        // Fetch VAPID key
         const res = await fetch('/api/vapid-public-key');
         const data = await res.json();
         vapidPublicKey = data.publicKey;
 
-        // Register Service Worker
         const reg = await navigator.serviceWorker.register('/sw.js');
-        console.log('SW Registered:', reg.scope);
-
-        // Check if already subscribed
         const sub = await reg.pushManager.getSubscription();
         if (sub) {
             document.getElementById('subPending').style.display = 'none';
@@ -139,18 +84,16 @@ window.addEventListener('load', async () => {
             document.getElementById('subDenied').style.display = 'block';
         }
     } catch (e) {
-        console.error('Initialization error:', e);
+        console.error(e);
     }
 });
 
-// Subscribe user to native push
 async function subscribeUser() {
     const btn = document.getElementById('subscribeBtn');
     btn.disabled = true;
-    btn.innerText = '⏳ جاري التسجيل...';
+    btn.innerText = '⏳ جاري الاتصال...';
 
     try {
-        // 1. Request permission
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             document.getElementById('subPending').style.display = 'none';
@@ -158,16 +101,12 @@ async function subscribeUser() {
             return;
         }
 
-        // 2. Register / wait for SW
         const reg = await navigator.serviceWorker.ready;
-
-        // 3. Subscribe with PushManager
         const sub = await reg.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlB64ToUint8Array(vapidPublicKey)
         });
 
-        // 4. Send subscription to our local server
         const resp = await fetch('/api/subscribe', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -183,38 +122,22 @@ async function subscribeUser() {
             document.getElementById('subSuccess').style.display = 'block';
             Swal.fire({
                 icon: 'success',
-                title: 'تم التفعيل بنجاح! 🔔',
-                text: 'تم تسجيل هاتفك في شبكة الإشعارات.',
-                confirmButtonColor: '#2563eb'
+                title: 'وصل النت مع المهندس نبيل! 🚀',
+                text: 'تم تأكيد اتصالك وتفعيل تنبيهات الشبكة بنجاح.',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'تمام'
             });
         } else {
-            throw new Error(result.error || 'فشل حفظ الاشتراك');
+            throw new Error(result.error || 'فشل الاتصال');
         }
     } catch (err) {
         btn.disabled = false;
-        btn.innerText = '🔔 تفعيل الإشعارات بنقرة واحدة';
+        btn.innerText = '⚡ وصل النت مع المهندس نبيل';
         Swal.fire({
             icon: 'error',
             title: 'خطأ',
             text: err.message
         });
-    }
-}
-
-// Test notification
-async function testMyDevice() {
-    try {
-        await fetch('/api/send', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                title: 'تجربة إشعار الواي فاي 📶',
-                message: 'مبروك! هاتفك يستقبل الإشعارات المباشرة بنجاح وبدون أي وسيط.',
-                priority: '3'
-            })
-        });
-    } catch (e) {
-        console.error(e);
     }
 }
 </script>
