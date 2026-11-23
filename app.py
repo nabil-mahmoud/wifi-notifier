@@ -273,7 +273,11 @@ def get_public_url():
 
 @app.route('/qr/portal.png')
 def qr_portal():
-    portal_url = f"{get_public_url()}/portal"
+    host = request.host_url.rstrip('/')
+    # If accessed over http on pythonanywhere, ensure https
+    if 'pythonanywhere.com' in host and host.startswith('http://'):
+        host = host.replace('http://', 'https://')
+    portal_url = f"{host}/portal"
     img = qrcode.make(portal_url)
     buf = io.BytesIO()
     img.save(buf, format='PNG')
