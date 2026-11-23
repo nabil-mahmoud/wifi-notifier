@@ -1,0 +1,30 @@
+{
+  "wifi_ssid": "Prof.NabilM",
+  "wifi_password": "2992023nm",
+  "topic_name": "nabil-wifi-alerts-99",
+  "admin_pin": "1234",
+  "history": [
+    {
+      "title": "تجربة إشعار الواي فاي 📶",
+      "message": "مبروك! هاتفك يستقبل الإشعارات المباشرة بنجاح وبدون أي وسيط.",
+      "urgent": false,
+      "timestamp": "2026-11-23 04:54 PM",
+      "sent_count": 1
+    },
+    {
+      "title": "تنبيه من شبكة الواي فاي",
+      "message": "تيست",
+      "urgent": false,
+      "timestamp": "2026-11-23 04:53 PM",
+      "sent_count": 1
+    },
+    {
+      "title": "تجربة النظام",
+      "message": "تم إطلاق نظام إشعارات الواي فاي بنجاح! 🚀",
+      "priority": 3,
+      "tags": "tada,wifi",
+      "timestamp": "2026-11-23 04:28 PM"
+    }
+  ],
+  "public_url": "https://tremendous-harvey-prozac-unlike.trycloudflare.com"
+}

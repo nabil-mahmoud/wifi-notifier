@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كارت الواي فاي وتفعيل الإشعارات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #f1f5f9; color: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        
+        .no-print-bar { margin-bottom: 25px; display: flex; gap: 15px; }
+        .btn-print { background: #2563eb; color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+        .btn-back { background: #64748b; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
+        
+        .printable-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 720px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 2px dashed #cbd5e1;
+            padding: 35px 30px;
+            text-align: center;
+        }
+
+        .card-header h1 { font-size: 26px; color: #1e293b; margin-bottom: 6px; }
+        .card-header p { color: #64748b; font-size: 15px; margin-bottom: 25px; }
+
+        .qr-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .qr-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-box.highlight {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .qr-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qr-box img {
+            width: 175px;
+            height: 175px;
+            border-radius: 12px;
+            background: #fff;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .qr-desc {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .network-details {
+            background: #f1f5f9;
+            padding: 14px 20px;
+            border-radius: 12px;
+            display: inline-flex;
+            gap: 25px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        .net-item strong { color: #2563eb; }
+
+        .card-footer {
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+        }
+
+        @media print {
+            body { background: transparent; padding: 0; min-height: auto; }
+            .no-print-bar { display: none !important; }
+            .printable-card { box-shadow: none; border: 2px solid #334155; max-width: 100%; margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print-bar">
+        <button onclick="window.print()" class="btn-print">🖨️ طباعة هذا الكارت الآن</button>
+        <a href="/" class="btn-back">⬅️ العودة للوحة التحكم</a>
+    </div>
+
+    <div class="printable-card">
+        <div class="card-header">
+            <h1>📶 شبكة الإنترنت وتنبيهات الواي فاي</h1>
+            <p>امسح الكود بكاميرا هاتفك للاتصال بالشبكة وتفعيل الإشعارات الفورية</p>
+        </div>
+
+        <div class="network-details">
+            <span class="net-item">اسم الشبكة: <strong>{{ config.wifi_ssid }}</strong></span>
+            {% if config.wifi_password %}
+            <span class="net-item">كلمة المرور: <strong>{{ config.wifi_password }}</strong></span>
+            {% endif %}
+        </div>
+
+        <div class="qr-columns">
+            <!-- WiFi Connect Box -->
+            <div class="qr-box">
+                <div class="qr-title">📡 1. الاتصال بالواي فاي</div>
+                <img src="/qr/wifi.png" alt="كود الواي فاي">
+                <p class="qr-desc">امسح الكود بكاميرا الهاتف للاتصال بشبكة الواي فاي تلقائياً بدون كتابة باسورد.</p>
+            </div>
+
+            <!-- Alerts Subscribe Box -->
+            <div class="qr-box highlight">
+                <div class="qr-title">🔔 2. تفعيل التنبيهات المباشرة</div>
+                <img src="/qr/portal.png" alt="كود التنبيهات">
+                <p class="qr-desc">امسح الكود واضغط <strong>تفعيل الإشعارات</strong> لتصلك تنبيهات انقطاع النت ومواعيد الصيانة فوراً.</p>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            🔒 نظام إشعارات خاص ومحمي 100% • بدون أي تطبيقات خارجية
+        </div>
+    </div>
+
+</body>
+</html>

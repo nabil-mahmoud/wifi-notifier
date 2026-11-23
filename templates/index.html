@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم إشعارات الواي فاي - خاص ومستقل{% endblock %}
+
+{% block content %}
+<header class="header">
+    <div class="logo-area">
+        <span class="icon">🔒</span>
+        <div>
+            <h1>نظام إشعارات الواي فاي (خاص ومستقل 100%)</h1>
+            <p>نظام Native Web Push مباشر بدون أي طرف ثالث أو خدمات وسيطة</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <a href="/card" target="_blank" class="btn btn-secondary">🖨️ طباعة كارت الـ QR</a>
+        <a href="/portal" target="_blank" class="btn btn-outline">📱 تجربة صفحة المشتركين</a>
+    </div>
+</header>
+
+<div class="dashboard-grid">
+    <!-- Send Message Section -->
+    <div class="card main-card">
+        <!-- Live Subscribers Badge -->
+        <div class="subscribers-stat-banner">
+            <div class="stat-info">
+                <span class="stat-number" id="subCount">{{ subscribers|length }}</span>
+                <span class="stat-label">هاتف مسجل حالياً لاستقبال الإشعارات</span>
+            </div>
+            <span class="pulse-indicator"></span>
+        </div>
+
+        <h2>📢 إرسال إشعار فوري لجميع المشتركين</h2>
+        <p class="subtitle">سيخرج الإشعار مباشرة من جهازك إلى شاشات قفل الهواتف المسجلة</p>
+
+        <!-- Quick Templates -->
+        <div class="templates-bar">
+            <span class="templates-label">⚡ قوالب جاهزة:</span>
+            <button type="button" class="template-chip" onclick="applyTemplate('صيانة طارئة ⏳', 'النت هيفصل للصيانة بعد 10 دقائق، يرجى حفظ أعمالكم.')">⏳ النت هيفصل للصيانة</button>
+            <button type="button" class="template-chip" onclick="applyTemplate('تنبيه الاستهلاك 📶', 'يرجى تخفيف التحميل والمشاهدة العالية حالياً لمراعاة الباقة.')">🐌 تخفيف التحميل</button>
+            <button type="button" class="template-chip" onclick="applyTemplate('بشرى سارة 🚀', 'تم تجديد باقة الإنترنت بنجاح والسرعة القصوى متاحة الآن!')">🎉 تم تجديد الباقة</button>
+            <button type="button" class="template-chip" onclick="applyTemplate('عطل بالشبكة ⚠️', 'يوجد عطل من الشركة في كابل الإنترنت وجاري المتابعة مع الدعم الفني.')">🚨 عطل من الشركة</button>
+        </div>
+
+        <form id="sendForm" onsubmit="handleSend(event)">
+            <div class="form-group">
+                <label>عنوان الإشعار</label>
+                <input type="text" id="notifTitle" class="form-control" value="تنبيه من شبكة الواي فاي" required placeholder="مثال: تنبيه هام، صيانة، تجديد الباقة...">
+            </div>
+
+            <div class="form-group">
+                <label>نص الرسالة</label>
+                <textarea id="notifMessage" class="form-control" rows="3" required placeholder="اكتب الرسالة التي تريد أن تظهر على شاشات هواتفهم..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>نوع التنبيه</label>
+                <select id="notifUrgent" class="form-control">
+                    <option value="false" selected>🔔 عادي (إشعار قياسي مع اهتزاز)</option>
+                    <option value="true">🚨 عاجل (إشعار ملح لا يختفي إلا عند فتحه)</option>
+                </select>
+            </div>
+
+            <button type="submit" id="sendBtn" class="btn btn-primary btn-large">
+                <span class="btn-text">🚀 إرسال الإشعار لجميع الهواتف المشتركة</span>
+            </button>
+        </form>
+
+        <!-- Subscribed Devices List -->
+        <div class="history-section">
+            <h3>📱 الهواتف والأجهزة المسجلة ({{ subscribers|length }})</h3>
+            <div class="subscribers-table-wrap">
+                {% if subscribers %}
+                <table class="sub-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نوع الجهاز والمتصفح</th>
+                            <th>تاريخ الاشتراك</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subscribers %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="font-mono text-sm">{{ sub.device }}</td>
+                            <td>{{ sub.created_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="empty-state">لا يوجد هواتف مسجلة بعد. امسح كود الـ QR من هاتفك لتكون أول مشترك!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sent History -->
+        <div class="history-section">
+            <h3>📜 سجل الإشعارات المرسلة مؤخراً</h3>
+            <div class="history-list" id="historyList">
+                {% if config.history %}
+                    {% for item in config.history %}
+                        <div class="history-item">
+                            <div class="history-header">
+                                <span class="history-title">{{ item.title }}</span>
+                                <span class="history-time">{{ item.timestamp }}</span>
+                            </div>
+                            <div class="history-msg">{{ item.message }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-state">لم يتم إرسال إشعارات بعد.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings & QR Side Section -->
+    <div class="card side-card">
+        <h2>⚙️ إعدادات الشبكة والرابط المشفر</h2>
+        <p class="subtitle">بيانات الواي فاي ورابط بوابة المشتركين الآمنة</p>
+
+        <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+            <div class="form-group">
+                <label>اسم شبكة الواي فاي (SSID)</label>
+                <input type="text" id="cfgSsid" class="form-control" value="{{ config.wifi_ssid }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة سر الواي فاي (Password)</label>
+                <input type="text" id="cfgPwd" class="form-control" value="{{ config.wifi_password }}" placeholder="اتركه فارغاً إذا بدون باسورد">
+            </div>
+
+            <div class="form-group">
+                <label>الرابط المشفر للبوابة (HTTPS Public URL)</label>
+                <input type="text" id="cfgUrl" class="form-control font-mono text-sm" value="{{ config.public_url }}" placeholder="https://....trycloudflare.com">
+                <small class="hint">هذا هو الرابط المشفر الذي يفتحه كود الـ QR لتفعيل الإشعارات للمتصلين.</small>
+            </div>
+
+            <button type="submit" class="btn btn-success full-width">💾 حفظ وتحديث الأكواد</button>
+        </form>
+
+        <div class="qr-preview-box">
+            <h3>📲 كود الـ QR لبوابة المشتركين:</h3>
+            <div class="qr-img-wrap">
+                <img id="qrPortalImg" src="/qr/portal.png" alt="كود البوابة">
+            </div>
+            <p class="qr-hint">امسح الكود بكاميرا هاتفك للاشتراك في الإشعارات مباشرة وبدون أي تطبيق خارجي!</p>
+            <div class="qr-actions">
+                <a href="/qr/portal.png" download="wifi-portal-qr.png" class="btn btn-sm btn-outline">⬇️ تحميل الكود</a>
+                <a href="/card" target="_blank" class="btn btn-sm btn-secondary">🖨️ كارت الطباعة</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function applyTemplate(title, msg) {
+    document.getElementById('notifTitle').value = title;
+    document.getElementById('notifMessage').value = msg;
+    
+    const ta = document.getElementById('notifMessage');
+    ta.style.backgroundColor = '#e8f5e9';
+    setTimeout(() => ta.style.backgroundColor = '', 400);
+}
+
+async function handleSend(e) {
+    e.preventDefault();
+    const btn = document.getElementById('sendBtn');
+    const title = document.getElementById('notifTitle').value;
+    const message = document.getElementById('notifMessage').value;
+    const urgent = document.getElementById('notifUrgent').value === 'true';
+
+    btn.disabled = true;
+    btn.innerHTML = '⏳ جاري إرسال الإشعار لجميع الأجهزة...';
+
+    try {
+        const res = await fetch('/api/send', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title, message, urgent})
+        });
+        const data = await res.json();
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الإرسال بنجاح! 🚀',
+                text: data.message || `تم إرسال الإشعار لـ ${data.sent || 0} هاتف.`,
+                confirmButtonColor: '#2563eb'
+            });
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            Swal.fire({icon: 'error', title: 'فشل الإرسال', text: data.error || 'حدث خطأ'});
+        }
+    } catch (err) {
+        Swal.fire({icon: 'error', title: 'خطأ بالاتصال', text: err.message});
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 إرسال الإشعار لجميع الهواتف المشتركة';
+    }
+}
+
+async function handleSaveSettings(e) {
+    e.preventDefault();
+    const wifi_ssid = document.getElementById('cfgSsid').value;
+    const wifi_password = document.getElementById('cfgPwd').value;
+    const public_url = document.getElementById('cfgUrl').value;
+
+    try {
+        const res = await fetch('/api/settings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({wifi_ssid, wifi_password, public_url})
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('qrPortalImg').src = '/qr/portal.png?' + new Date().getTime();
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ!',
+                text: 'تم تحديث البيانات وتوليد كود الـ QR الجديد.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    } catch (err) {
+        Swal.fire({icon: 'error', title: 'خطأ', text: err.message});
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+  "name": "تنبيهات شبكة الواي فاي",
+  "short_name": "تنبيهات الواي فاي",
+  "description": "استقبال إشعارات وتنبيهات شبكة الواي فاي المنزلية",
+  "start_url": "/portal",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/static/icons/icon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}
